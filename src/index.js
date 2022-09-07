@@ -7,13 +7,15 @@ fetch('http://localhost:3000/ramens')
     document.querySelector('.restaurant').textContent = obj[0].restaurant
     document.querySelector('#rating-display').textContent = obj[0].rating
     document.querySelector('#comment-display').textContent = obj[0].comment
-    
+
     return obj
 })
 .then(obj => obj.forEach(ramen => renderRamen(ramen)))
 
 function renderRamen(ramen) {
+    
     const img = document.createElement('img')
+    const container = document.createElement('div')
     img.src = ramen.image
 
     img.addEventListener('click', (event) => {
@@ -24,15 +26,20 @@ function renderRamen(ramen) {
         document.querySelector('#comment-display').textContent = ramen.comment
     })
 
-    const imgDiv = document.querySelector('#ramen-menu')
-    imgDiv.append(img)
-}
 
+    const delBtn = document.createElement('button')
+    delBtn.textContent = "REMOVE"
+    delBtn.addEventListener('click', handleDelete)
+    delBtn.style.marginRight = '20px'
+
+    container.append(img, delBtn)
+
+    const imgDiv = document.querySelector('#ramen-menu')
+    imgDiv.append(container)
+}
 
 function handleSubmit(e) {
     e.preventDefault()
-
-
 
     const newRamen = {
         name: e.target.name.value,
@@ -44,5 +51,19 @@ function handleSubmit(e) {
     renderRamen(newRamen)
 }
 
+function handleEditSubmit(e) {
+    e.preventDefault()
+
+    document.querySelector('#rating-display').textContent = e.target.rating.value
+    document.querySelector('#comment-display').textContent = e.target['new-comment'].value
+}
+
+function handleDelete(e) {
+    e.target.parentElement.remove()
+}
+
 const form = document.querySelector('#new-ramen')
 form.addEventListener('submit', handleSubmit)
+
+const formEdit = document.querySelector('#edit-ramen')
+formEdit.addEventListener('submit', handleEditSubmit)
